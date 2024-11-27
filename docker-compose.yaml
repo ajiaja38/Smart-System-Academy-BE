@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    ports:
+      - '5439:5432'
+    env_file:
+      - .env.db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+
+  nest-app:
+    container_name: nest-ssa
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3003:3003
+    networks:
+      - monitoring
+    depends_on:
+      - postgres
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+
+networks:
+  monitoring:
+    external: true
+
+volumes:
+  postgres_data:
