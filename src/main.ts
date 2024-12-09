@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { INestApplication, Logger, RequestMethod } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 const bootstrap = async () => {
   const port: string | number = process.env.PORT || 3000;
@@ -9,7 +10,8 @@ const bootstrap = async () => {
 
   initializeTransactionalContext();
 
-  const app: INestApplication = await NestFactory.create(AppModule);
+  const app: INestApplication =
+    await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors();
   app.setGlobalPrefix(globalPrefix, {
